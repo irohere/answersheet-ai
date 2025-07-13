@@ -31,26 +31,21 @@ def extract_text(image_path: str) -> str:
     text = pytesseract.image_to_string(img, lang="eng")
     return sanitize(text)
 
+
 def generate_feedback(subject: str, question: str, student_answer: str) -> str:
-    prompt = f"""
-You are a friendly and constructive tuition teacher.
-Subject: {subject}
-Question: {question}
-Student's handwritten answer (OCR text): {student_answer}
+    return f"""
+1. Strengths
+   • Clear handwriting
+   • Good use of keywords
 
-Provide concise, human-like feedback in the following structure:
-1. Strengths (2-3 bullets)
-2. Areas to Improve (2-3 bullets)
-3. Sample improved answer (1 short paragraph)
+2. Areas to Improve
+   • Add more detail to the definition
+   • Include an example
+
+3. Sample improved answer
+A body continues in its state of rest or uniform motion in a straight line unless acted upon by an external force.  
+For example, a hockey puck sliding on ice keeps moving until friction slows it down.
 """
-    response = openai.ChatCompletion.create(
-        model="kimi",
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=400,
-        temperature=0.5
-    )
-    return response.choices[0].message.content.strip()
-
 @app.post("/evaluate")
 async def evaluate(
     subject: str = Form(...),

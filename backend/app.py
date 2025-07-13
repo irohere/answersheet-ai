@@ -1,10 +1,11 @@
 import io
+import os
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 import pytesseract
 
-app = FastAPI()
+app = FastAPI(root_path="/")  # <- required for Vercel
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,19 +19,17 @@ def extract_text(contents: bytes) -> str:
     return pytesseract.image_to_string(Image.open(io.BytesIO(contents)), lang="eng").strip()
 
 def generate_feedback(subject: str, question: str, student_answer: str) -> str:
-    return f"""
-1. Strengths
-   • Handwriting is legible.
-   • Key terms are present.
-
-2. Areas to Improve
-   • Add more depth to definitions.
-   • Provide a real-world example.
-
-3. Sample improved answer
-Newton’s first law: an object stays at rest or in uniform motion unless acted upon by an external force.
-Example: a hockey puck slides on ice until friction stops it.
-"""
+    return (
+        "1. Strengths\n"
+        "   • Handwriting is legible.\n"
+        "   • Key terms are present.\n\n"
+        "2. Areas to Improve\n"
+        "   • Add more depth to definitions.\n"
+        "   • Provide a real-world example.\n\n"
+        "3. Sample improved answer\n"
+        "Newton’s first law: an object stays at rest or in uniform motion unless acted upon by an external force.\n"
+        "Example: a hockey puck slides on ice until friction stops it."
+    )
 
 @app.post("/evaluate")
 async def evaluate(

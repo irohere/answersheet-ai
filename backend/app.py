@@ -1,11 +1,10 @@
 import io
-import os
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 import pytesseract
 
-app = FastAPI(root_path="/")  # <- required for Vercel
+app = FastAPI(root_path="/")
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,14 +20,14 @@ def extract_text(contents: bytes) -> str:
 def generate_feedback(subject: str, question: str, student_answer: str) -> str:
     return (
         "1. Strengths\n"
-        "   • Handwriting is legible.\n"
-        "   • Key terms are present.\n\n"
+        "   • Legible handwriting\n"
+        "   • Uses key terms\n\n"
         "2. Areas to Improve\n"
-        "   • Add more depth to definitions.\n"
-        "   • Provide a real-world example.\n\n"
+        "   • Elaborate definitions\n"
+        "   • Add real-life example\n\n"
         "3. Sample improved answer\n"
-        "Newton’s first law: an object stays at rest or in uniform motion unless acted upon by an external force.\n"
-        "Example: a hockey puck slides on ice until friction stops it."
+        "Newton’s first law: an object remains at rest or in uniform motion unless acted upon by an external force. "
+        "Example: A puck slides on ice until friction stops it."
     )
 
 @app.post("/evaluate")

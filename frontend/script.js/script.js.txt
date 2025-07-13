@@ -1,0 +1,24 @@
+const form = document.getElementById("uploadForm");
+const result = document.getElementById("result");
+const feedbackText = document.getElementById("feedbackText");
+const copyBtn = document.getElementById("copyBtn");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const formData = new FormData(form);
+  try {
+    const res = await fetch("http://localhost:8000/evaluate", {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+    feedbackText.textContent = data.feedback;
+    result.hidden = false;
+  } catch (err) {
+    alert("Error: " + err);
+  }
+});
+
+copyBtn.addEventListener("click", () => {
+  navigator.clipboard.writeText(feedbackText.textContent);
+});
